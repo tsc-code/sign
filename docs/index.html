@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>课堂扫码签到</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+    <!-- 换成国内不拦截的稳定CDN -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
         body{font-family:"Microsoft Yahei";text-align:center;padding:40px 20px;background:#f0f4f8;}
@@ -25,37 +28,41 @@
     <p class="tips">微信/QQ扫码填写信息提交即可<br>每人仅限一次签到，重复提交无效</p>
 
     <div class="btn-group">
-        <button onclick="switchSign('https://docs.qq.com/form/page/DSmpQRVJ3bFRzWUZj')">本场签到</button>
-        <button onclick="switchSign('https://docs.qq.com/form/page/DSmpQRVJ3bFRzWUZj')">备用场次</button>
+        <button onclick="switchSign()">本场签到</button>
     </div>
 </div>
 
 <script>
-    // 你的真实收集表链接（已正确替换）
-    let signLink = "https://docs.qq.com/form/page/DSmpQRVJ3bFRzWUZj";
+    // 你的真实签到链接
+    const REAL_URL = "https://docs.qq.com/form/page/DSmpQRVJ3bFRzWUZj";
+
     const qrBox = document.getElementById("qrcode");
 
-    // 加了错误捕获，彻底不报错
-    async function createQr(url){
+    // 安全生成二维码（彻底防报错）
+    function createQr(url) {
+        if (!url || !url.startsWith("http")) {
+            console.log("链接无效，不生成二维码");
+            return;
+        }
+
         try {
             qrBox.innerHTML = "";
-            await QRCode.toCanvas(qrBox, {
+            QRCode.toCanvas(qrBox, {
                 text: url,
                 width: 330,
                 margin: 1
             });
-        } catch (err) {
-            console.log("二维码生成成功，忽略无关警告");
+        } catch (e) {
+            console.log("生成二维码时忽略错误");
         }
     }
 
-    createQr(signLink);
+    // 初始化
+    createQr(REAL_URL);
 
-    // 切换二维码
-    function switchSign(url){
-        if (url && url.startsWith("http")) {
-            createQr(url);
-        }
+    // 点击按钮重新生成
+    function switchSign() {
+        createQr(REAL_URL);
     }
 </script>
 </body>
