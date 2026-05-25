@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>课堂扫码签到</title>
 
-    <!-- 换成国内不拦截的稳定CDN -->
+    <!-- 换用国内稳定 CDN -->
     <script src="https://cdn.bootcdn.net/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
 
     <style>
@@ -15,6 +15,7 @@
         .title{font-size:26px;color:#1a1a1a;margin-bottom:12px;}
         .info{color:#555;font-size:15px;margin-bottom:28px;}
         #qrcode{margin:0 auto 25px;}
+        #qrcode img{width:330px;height:330px;} /* 确保图片显示 */
         .tips{color:#777;font-size:14px;line-height:1.8;}
         .btn-group{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
         button{padding:8px 16px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;font-size:14px;}
@@ -33,34 +34,37 @@
 </div>
 
 <script>
-    // 你的真实签到链接
     const REAL_URL = "https://docs.qq.com/form/page/DSmpQRVJ3bFRzWUZj";
-
     const qrBox = document.getElementById("qrcode");
 
-    // 安全生成二维码（彻底防报错）
+    // 改用 toDataURL → <img>，绝对能显示
     function createQr(url) {
         if (!url || !url.startsWith("http")) {
-            console.log("链接无效，不生成二维码");
+            console.log("链接无效");
             return;
         }
 
-        try {
-            qrBox.innerHTML = "";
-            QRCode.toCanvas(qrBox, {
-                text: url,
-                width: 330,
-                margin: 1
-            });
-        } catch (e) {
-            console.log("生成二维码时忽略错误");
-        }
+        qrBox.innerHTML = "";
+
+        QRCode.toDataURL(url, {
+            width: 330,
+            margin: 1
+        }, function (err, dataUrl) {
+            if (err) {
+                console.error("二维码生成失败：", err);
+                return;
+            }
+            const img = new Image();
+            img.src = dataUrl;
+            img.alt = "签到二维码";
+            qrBox.appendChild(img);
+            console.log("二维码生成成功（img 模式）");
+        });
     }
 
     // 初始化
     createQr(REAL_URL);
 
-    // 点击按钮重新生成
     function switchSign() {
         createQr(REAL_URL);
     }
