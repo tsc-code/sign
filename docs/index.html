@@ -25,13 +25,13 @@ button{padding:8px 16px;border:none;border-radius:6px;background:#2563eb;color:#
     <p class="tips">微信/QQ扫码填写信息提交即可<br>每人仅限一次签到，重复提交无效</p>
 
     <div class="btn-group">
-        <button onclick="switchSign('链接1')">本场签到</button>
+        <button onclick="switchSign('https://docs.qq.com/smartsheet/DSnBNS21MQXRxaEdx?tab=t00i2h')">本场签到</button>
         <button onclick="switchSign('链接2')">备用场次</button>
     </div>
 </div>
 
 <script>
-let signLink = "默认腾讯收集表链接";
+let signLink = "https://docs.qq.com/smartsheet/DSnBNS21MQXRxaEdx?tab=t00i2h";
 const qrBox = document.getElementById("qrcode");
 
 function createQr(url){
